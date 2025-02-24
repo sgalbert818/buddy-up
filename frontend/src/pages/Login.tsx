@@ -1,5 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from "../context/AuthContext"
+import axios from "axios"
 
 interface FormData {
   email: string,
@@ -12,6 +14,7 @@ const Login: React.FC = () => {
     email: '',
     password: '',
   })
+  const { setToken } = useAuth();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -21,13 +24,19 @@ const Login: React.FC = () => {
     })
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!formData.email || !formData.password) {
       alert('Ensure all fields are filled out.')
       return;
     }
-    console.log(formData)
+    try {
+      const response = await axios.post('http://localhost:5000/login', formData);
+      setToken(response.data.access_token);
+      localStorage.setItem('token', response.data.access_token);
+    } catch (err) {
+      alert('Invalid credentials');
+    }
     setFormData({
       email: '',
       password: '',

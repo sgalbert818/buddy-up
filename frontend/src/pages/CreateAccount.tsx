@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import axios from "axios"
 
 interface FormData {
   email: string,
@@ -23,7 +24,7 @@ const CreateAccount: React.FC = () => {
     })
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!formData.email || !formData.password || !formData.confirmPassword) {
       alert('Ensure all fields are filled out.')
@@ -33,7 +34,12 @@ const CreateAccount: React.FC = () => {
       alert('Password entries do not match.')
       return;
     }
-    console.log(formData)
+    try {
+      await axios.post('http://localhost:5000/createaccount', formData);
+      alert('User registered successfully!');
+    } catch (err) {
+      alert('Failed to register user');
+    }
     setFormData({
       email: '',
       password: '',
