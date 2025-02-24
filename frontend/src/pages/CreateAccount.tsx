@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import axios from "axios"
+import { useNavigate } from 'react-router-dom';
 
 interface FormData {
   email: string,
@@ -15,6 +16,7 @@ const CreateAccount: React.FC = () => {
     password: '',
     confirmPassword: ''
   })
+  const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -36,6 +38,7 @@ const CreateAccount: React.FC = () => {
     }
     try {
       await axios.post('http://localhost:5000/createaccount', formData);
+      navigate('/');
       alert('User registered successfully!');
     } catch (err) {
       alert('Failed to register user');

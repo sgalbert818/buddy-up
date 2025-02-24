@@ -1,11 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Welcome: React.FC = () => {
-  const { token } = useAuth();
+  const { token, setToken } = useAuth();
   const [message, setMessage] = React.useState('');
+  const navigate = useNavigate()
 
   React.useEffect(() => {
     if (token) {
@@ -17,10 +18,16 @@ const Welcome: React.FC = () => {
     }
   }, [token]);
 
+  const logout = () => {
+    localStorage.removeItem('token');
+    setToken(null);
+    navigate('/');
+  };
+
   return (
     <div>
       <h3>Welcome {message}!</h3>
-      <Link to="/"><button>Sign Out</button></Link>
+      <button onClick={logout}>Sign Out</button>
     </div>
   )
 };
