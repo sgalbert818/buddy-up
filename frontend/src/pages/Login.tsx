@@ -9,6 +9,15 @@ interface FormData {
   password: string,
 }
 
+interface Error {
+  response: {
+    data: {
+      message: string
+    }
+  }
+  status: number
+}
+
 const Login: React.FC = () => {
 
   const [formData, setFormData] = useState<FormData>({
@@ -38,7 +47,8 @@ const Login: React.FC = () => {
       localStorage.setItem('token', response.data.access_token);
       navigate('/welcome');
     } catch (err) {
-      alert('Invalid credentials');
+      const error = err as Error;
+      alert(error.response.data.message)
     }
     setFormData({
       email: '',

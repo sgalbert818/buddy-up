@@ -9,6 +9,15 @@ interface FormData {
   confirmPassword: string
 }
 
+interface Error {
+  response: {
+    data: {
+      message: string
+    }
+  }
+  status: number
+}
+
 const CreateAccount: React.FC = () => {
 
   const [formData, setFormData] = useState<FormData>({
@@ -41,7 +50,8 @@ const CreateAccount: React.FC = () => {
       navigate('/');
       alert('User registered successfully!');
     } catch (err) {
-      alert('Failed to register user');
+      const error = err as Error;
+      alert(error.response.data.message)
     }
     setFormData({
       email: '',
