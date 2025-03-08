@@ -24,7 +24,7 @@ const Login: React.FC = () => {
     email: '',
     password: '',
   })
-  const { setToken } = useAuth();
+  const { setToken, setEmail } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -44,6 +44,7 @@ const Login: React.FC = () => {
     try {
       const response = await axios.post('http://localhost:5000/login', formData);
       setToken(response.data.access_token);
+      setEmail(response.data.email);
       localStorage.setItem('token', response.data.access_token);
       navigate('/welcome');
     } catch (err) {

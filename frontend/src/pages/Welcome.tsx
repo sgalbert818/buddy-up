@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect, FormEvent } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -9,9 +9,17 @@ interface FormData {
   interests: Array<string>
 }
 
+interface Error {
+  response: {
+    data: {
+      message: string
+    }
+  }
+  status: number
+}
+
 const Welcome: React.FC = () => {
-  const { token, setToken } = useAuth();
-  const [user, setUser] = React.useState('');
+  const { token, setToken, email, setEmail } = useAuth();
   const navigate = useNavigate()
 
   const [formData, setFormData] = useState<FormData>({
@@ -20,15 +28,7 @@ const Welcome: React.FC = () => {
     interests: []
   })
 
-  useEffect(() => {
-    if (token) {
-      axios.get('http://localhost:5000/protected', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then(response => setUser(response.data.email))
-        .catch(() => setUser('Access Denied'));
-    }
-  }, [token]);
+  // handle formData change
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -38,7 +38,6 @@ const Welcome: React.FC = () => {
         [name]: value,
       });
     }
-
     if (type === 'checkbox') {
       if (checked) { // add to array
         setFormData({
@@ -54,27 +53,52 @@ const Welcome: React.FC = () => {
     }
   };
 
+  // handle form submission, edit user profile in db
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    // add profile updates to backend user profile
-    console.log(formData)
-    setFormData({
-      name: '',
-      age: '',
-      interests: []
-    })
-  }
+    e.preventDefault();
+    if (!formData.name || !formData.age || !formData.interests.length) {
+      alert('Ensure all fields are filled out.')
+      return;
+    }
+    if (token) {
+      try {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json', // Ensure it's treated as JSON
+          }
+        };
+        await axios.post('http://localhost:5000/createprofile', formData, config);
+        // navigate('/');
+        console.log('sent to backend, updated in db');
+      } catch (err) {
+        const error = err as Error;
+        alert(error.response.data.message)
+      }
+      setFormData({
+        name: '',
+        age: '',
+        interests: []
+      })
+    }
+  };  
+
+  // logout user, clear JWT session
 
   const logout = () => {
     localStorage.removeItem('token');
     setToken(null);
+    setEmail(null);
     navigate('/');
   };
+
+  // delete user account
 
   const deleteAccount = async () => {
     try {
       await axios.delete('http://localhost:5000/deleteaccount', {
-        data: { user }
+        data: { email }
       });
       localStorage.removeItem('token');
       setToken(null);
@@ -84,6 +108,26 @@ const Welcome: React.FC = () => {
       alert('Failed to delete user');
     }
   }
+
+  // test button to ensure edits were made
+
+  const test = async () => {
+    if (token) {
+      try {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json', // Ensure it's treated as JSON
+          }
+        };
+        const response = await axios.post('http://localhost:5000/test', 'placeholder', config);
+        console.log('Response from backend:', response.data);
+      } catch (err) {
+        const error = err as Error;
+        alert(error.response.data.message)
+      }
+    }
+  }; 
 
   return (
     <div>
@@ -180,6 +224,7 @@ const Welcome: React.FC = () => {
           <button type="submit">Save Profile</button>
         </form>
       </div>
+      <button onClick={test}>Test</button>
       <button onClick={logout}>Sign Out</button>
       <button onClick={deleteAccount}>Delete Account</button>
     </div>

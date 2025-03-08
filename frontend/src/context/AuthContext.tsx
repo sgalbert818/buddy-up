@@ -3,6 +3,8 @@ import React, { createContext, useState, useContext, ReactNode } from 'react';
 interface AuthContextType {
     token: string | null;
     setToken: (token: string | null) => void;
+    email: string | null;
+    setEmail: (token: string | null) => void;
 }
 
 // Define the AuthProvider props type
@@ -22,9 +24,10 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+    const [email, setEmail] = useState<string | null>(null);
 
     return (
-        <AuthContext.Provider value={{ token, setToken }}>
+        <AuthContext.Provider value={{ token, setToken, email, setEmail }}>
             {children}
         </AuthContext.Provider>
     );
