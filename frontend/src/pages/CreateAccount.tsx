@@ -35,7 +35,7 @@ const CreateAccount: React.FC = () => {
     })
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const createAccount = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!formData.email || !formData.password || !formData.confirmPassword) {
       alert('Ensure all fields are filled out.')
@@ -64,7 +64,7 @@ const CreateAccount: React.FC = () => {
     <div>
       <h3>Create Account</h3>
       <div className="form">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={createAccount}>
           <input
             type="text"
             id="email"

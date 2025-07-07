@@ -48,7 +48,10 @@ def login():
         return jsonify(message="Incorrect password"), 401
     # generate access token for user
     access_token = create_access_token(identity=email)
-    return jsonify(access_token=access_token, email=email), 200
+    name = user.name
+    age = user.age
+    interests = user.interests
+    return jsonify(access_token=access_token, email=email,name=name, age=age, interests=interests), 200
 
 # Protected route for user profile edit
 

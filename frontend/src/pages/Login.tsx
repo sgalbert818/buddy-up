@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext"
+import { useUser } from "../context/UserContext"
 import axios from "axios"
 import { useNavigate } from 'react-router-dom';
 
@@ -25,6 +26,7 @@ const Login: React.FC = () => {
     password: '',
   })
   const { setToken, setEmail } = useAuth();
+  const { setUserProfile } = useUser()
   const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +48,16 @@ const Login: React.FC = () => {
       setToken(response.data.access_token);
       setEmail(response.data.email);
       localStorage.setItem('token', response.data.access_token);
-      navigate('/welcome');
+      if (!response.data.name || !response.data.age) {
+        navigate('/welcome')
+      } else {
+        setUserProfile({
+          name: response.data.name,
+          age: response.data.age,
+          interests: response.data.interests
+        })
+        navigate('/home');
+      }
     } catch (err) {
       const error = err as Error;
       alert(error.response.data.message)
