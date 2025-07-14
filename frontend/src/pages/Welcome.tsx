@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
@@ -11,15 +11,6 @@ interface FormData {
   name: string,
   age: number | string,
   interests: Array<string>
-}
-
-interface Error {
-  response: {
-    data: {
-      message: string
-    }
-  }
-  status: number
 }
 
 const Welcome: React.FC = () => {
@@ -93,8 +84,9 @@ const Welcome: React.FC = () => {
         setUserProfile(formData)
         navigate('/home')
       } catch (err) {
-        const error = err as Error;
-        alert(error.response.data.message)
+        const error = err as AxiosError<{ message?: string }>;
+        console.error('Error in saving changes:', error.response?.data?.message || err);
+        alert(error.response?.data?.message || 'Error in saving changes.');
       }
       setFormData({
         name: '',

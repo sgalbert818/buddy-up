@@ -1,7 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { useUser } from '../context/UserContext'
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 export const useDelete = () => {
     const { setToken, email } = useAuth();
@@ -19,7 +19,9 @@ export const useDelete = () => {
             navigate('/');
             alert('User deleted successfully!');
         } catch (err) {
-            alert('Failed to delete user');
+            const error = err as AxiosError<{ message?: string }>;
+            console.error('Delete error:', error.response?.data?.message || err);
+            alert(error.response?.data?.message || 'Failed to delete user.');
         }
     }
     return deleteAccount;

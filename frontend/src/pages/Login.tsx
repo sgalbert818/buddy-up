@@ -2,21 +2,12 @@ import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext"
 import { useUser } from "../context/UserContext"
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import { useNavigate } from 'react-router-dom';
 
 interface FormData {
   email: string,
   password: string,
-}
-
-interface Error {
-  response: {
-    data: {
-      message: string
-    }
-  }
-  status: number
 }
 
 const Login: React.FC = () => {
@@ -59,8 +50,9 @@ const Login: React.FC = () => {
         navigate('/home');
       }
     } catch (err) {
-      const error = err as Error;
-      alert(error.response.data.message)
+      const error = err as AxiosError<{ message?: string }>;
+      console.error('Error logging in:', error.response?.data?.message || err);
+      alert(error.response?.data?.message || 'Error logging in.');
     }
     setFormData({
       email: '',
