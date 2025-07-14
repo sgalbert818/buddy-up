@@ -90,3 +90,16 @@ def get_user():
         age = user.age
         interests = user.interests
     return jsonify(message='success', name=name, age=age, interests=interests), 200
+
+@jwt_required()
+def get_all_users():
+    email = get_jwt_identity()
+    users = User.query.filter(User.email != email).all()
+    result = [
+        {
+            'name': user.name,
+            'age': user.age,
+            'interests': user.interests
+        } for user in users
+    ]
+    return jsonify(message='success', users=result), 200

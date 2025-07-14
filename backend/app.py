@@ -7,6 +7,8 @@ import routes  # Import routes from routes.py
 
 # sarah 1
 # sam 2
+# daniel 3
+# jamey 4
 
 app = Flask(__name__)
 CORS(app)
@@ -20,6 +22,7 @@ app.add_url_rule('/deleteaccount', 'delete_account', routes.delete_account, meth
 app.add_url_rule('/login', 'login', routes.login, methods=['POST'])
 app.add_url_rule('/createprofile', 'create_profile', routes.create_profile, methods=['POST'])
 app.add_url_rule('/getuser', 'getuser', routes.get_user, methods=['GET'])
+app.add_url_rule('/getallusers', 'getallusers', routes.get_all_users, methods=['GET'])
 
 if __name__ == '__main__':
     with app.app_context():
