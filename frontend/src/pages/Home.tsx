@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { useLogout } from '../hooks/useLogout';
 import { useDelete } from '../hooks/useDelete';
 import Main from '../components/Main'
+import { useFetchUser } from '../hooks/fetchUser'
 
 export default function Home() {
+
+    useFetchUser(); // check and load user profile on mount
 
     const { userProfile } = useUser();
     const navigate = useNavigate()

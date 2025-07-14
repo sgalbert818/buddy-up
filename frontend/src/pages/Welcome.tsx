@@ -1,10 +1,11 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { useLogout } from '../hooks/useLogout';
 import { useDelete } from '../hooks/useDelete';
+import { useFetchUser } from '../hooks/fetchUser'
 
 interface FormData {
   name: string,
@@ -22,6 +23,9 @@ interface Error {
 }
 
 const Welcome: React.FC = () => {
+
+  useFetchUser(); // check and load user profile on mount
+
   const { token } = useAuth();
   const { userProfile, setUserProfile } = useUser()
   const navigate = useNavigate()
@@ -29,10 +33,20 @@ const Welcome: React.FC = () => {
   const deleteAccount = useDelete()
 
   const [formData, setFormData] = useState<FormData>({
-    name: userProfile?.name || '',
-    age: userProfile?.age || '',
-    interests: userProfile?.interests || []
+    name: '',
+    age: '',
+    interests: []
   })
+
+  useEffect(() => {
+    if (userProfile) {
+      setFormData({
+        name: userProfile.name || '',
+        age: userProfile.age || '',
+        interests: userProfile.interests || []
+      });
+    }
+  }, [userProfile]);
 
   // handle formData change
 

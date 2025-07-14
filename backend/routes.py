@@ -81,7 +81,7 @@ def create_profile():
 # Protected test route to check user edits
 
 @jwt_required()
-def test():
+def get_user():
     email = get_jwt_identity()
     user = User.query.filter_by(email=email).first()
     if user:  # Check if a user with the provided email exists

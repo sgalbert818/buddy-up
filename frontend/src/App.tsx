@@ -6,6 +6,7 @@ import CreateAccount from "./pages/CreateAccount.tsx"
 import Home from "./pages/Home.tsx"
 
 const App: React.FC = () => {
+
   return (
     <div>
       <h1>BuddyUp</h1>
