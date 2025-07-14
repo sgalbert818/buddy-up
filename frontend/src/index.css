@@ -16,3 +16,19 @@ form {
 form input {
     margin: 0 0 5px 0;
 }
+
+.main {
+    border: 2px solid black;
+    height: 200px;
+    width: 200px;
+    margin: 10px 10px 10px 0;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.main-btns {
+    display: flex;
+    justify-content: space-between;
+}
